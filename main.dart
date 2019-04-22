@@ -1,10 +1,7 @@
 import 'dart:html';
-import 'dart:math' as Math;
 
 CanvasElement context;
 CanvasRenderingContext2D ctx;
-int x = 20;
-int y = 30;
 
 void clear() {
   ctx..fillStyle = "blue";
@@ -18,13 +15,7 @@ class Ball {
   double vx;
   double vy;
 
-  Ball() {
-    this.x = 50;
-    this.y = 50;
-    this.r = 15;
-    this.vx = 0;
-    this.vy = 0;
-  }
+  Ball(this.x, this.y, this.r, this.vx, this.vy);
 
   void drawBall() {
     ctx.beginPath();
@@ -34,26 +25,26 @@ class Ball {
     ctx.closePath();
   }
 
-  void drawMove(MouseEvent event) {
-    while (this.y + this.r < context.height) {
-      this.x += this.vx;
-      this.y += this.vy;
-      this.vx *= .99;
-      this.vy *= .99;
-      this.vy += .25;
-      this.vx += .25;
-    }
-
+  void update() {
+    this.vx *= .99;
+    this.vy *= .99;
+    this.vy += .25;
+    this.x += this.vx;
+    this.y += this.vy;
     if (this.y + this.r > context.height) {
       this.y = context.height - this.r;
-      this.vy = this.vy.abs();
+      this.vy = this.vy * -1;
     }
     if (this.x + this.r > context.width) {
       this.x = context.width - this.r;
-      this.vx = this.vx.abs();
+      this.vx = this.vx * -1;
     }
-    clear();
-    drawBall();
+  }
+
+  void drawMove(MouseEvent event) {
+      clear();
+      update();
+      drawBall();
   }
 }
 
@@ -62,7 +53,7 @@ void main() {
   ctx = context.getContext('2d');
   ctx..fillStyle = "green";
   ctx..strokeStyle = "blue";
-  var ball = Ball();
+  var ball = Ball(50, 50, 15, 2, 3);
   ball.drawBall();
   querySelector("#canvas").onClick.listen(ball.drawMove);
 }
