@@ -18,6 +18,13 @@ class Ball {
 
   Ball(this.x, this.y, this.r, this.vx, this.vy);
 
+  void moveTo(x, y, vx, vy) {
+    this.x = x;
+    this.y = y;
+    this.vx = vx;
+    this.vy = vy;
+  }
+
   void drawBall() {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, 3.14 * 2);
@@ -30,7 +37,6 @@ class Ball {
     this.vx *= .99;
     this.vy *= .99;
     this.vy += .25;
-    this.vx += .25;
     this.x += this.vx;
     this.y += this.vy;
     if (this.y + this.r > context.height) {
@@ -43,7 +49,7 @@ class Ball {
     }
   }
 
-  void drawMove(MouseEvent event) {
+  void drawMove() {
     new Timer.periodic(const Duration(milliseconds: 10), (_) {
       clear();
       update();
@@ -58,6 +64,14 @@ void main() {
   ctx..fillStyle = "green";
   ctx..strokeStyle = "blue";
   var ball = Ball(50, 50, 15, 2, 3);
-  ball.drawBall();
-  querySelector("#canvas").onClick.listen(ball.drawMove);
+  var clientRect = ctx.canvas.getBoundingClientRect();
+  ctx.canvas.onClick.listen((e) {
+    var x = e.client.x - clientRect.left;
+    var y = e.client.y - clientRect.top;
+    ball.moveTo(x, y, 2, 3);
+    ball.drawBall();
+    ball.drawMove();
+    print(ball.vy);
+    clear();
+  });
 }
