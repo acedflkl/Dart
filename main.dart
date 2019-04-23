@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:async';
 
 CanvasElement context;
 CanvasRenderingContext2D ctx;
@@ -29,6 +30,7 @@ class Ball {
     this.vx *= .99;
     this.vy *= .99;
     this.vy += .25;
+    this.vx += .25;
     this.x += this.vx;
     this.y += this.vy;
     if (this.y + this.r > context.height) {
@@ -42,9 +44,11 @@ class Ball {
   }
 
   void drawMove(MouseEvent event) {
+    new Timer.periodic(const Duration(milliseconds: 10), (_) {
       clear();
       update();
       drawBall();
+    });
   }
 }
 
